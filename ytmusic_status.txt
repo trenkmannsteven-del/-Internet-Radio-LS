@@ -1,8 +1,0 @@
-﻿Available=False
-State=Nicht verbunden
-TitleBase64=
-ArtistBase64=
-AlbumBase64=
-SourceBase64=
-CoverPathBase64=
-
