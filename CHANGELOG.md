@@ -1,57 +1,36 @@
 # Changelog
 
-## v1.0.0
+## v1.0.1 Public Beta — TEST74.2
 
-Initial public release of Internet Radio LS.
+- Rebuilt the safe menu-close fix on the stable TEST73 base.
+- Menu close-on-press now uses a harmless request flag consumed on the normal game tick.
+- Removed the crash-prone direct `KeyDown` state-toggle approach from TEST74.
+- Removed the `GetAsyncKeyState` menu polling approach from TEST74.1.
+- Retained final icon baseline/card-balance tuning and the subtle neon pedestal under UI symbols.
+- Public-release safeguards retained: single-player/network guard, neutral provider icons, Artwork OFF by default, runtime cache cleanup and legal/privacy notices.
 
-### Features
+## TEST73
 
-- 61 real internet radio stations
-- 10 radio categories
-- 13 selectable themes
-- 3 selectable interface languages
-- Favorites system with up to 6 slots
-- Live station metadata where supported
-- YouTube Music integration
-- Live audio-reactive visualizer
-- Dialogue, phone and menu ducking
-- Adjustable volume step
-- Mini radio UI while driving
-- Category-based station colors
-- Automatic UserSettings.ini creation
-- Configuration reload with F8
-- Custom station support through InternetRadio.ini
+- Per-icon optical alignment corrections.
+- Added restrained neon-style accent pedestal below media/UI symbols.
 
-### Themes
+## TEST72
 
-- Modern Green
-- OEM Blue
-- Red Sport
-- Amber Classic
-- Minimal White
-- Spectrum
-- GTA Vice City
-- GTA San Andreas
-- Cyberpunk Neon
-- NFS Underground 2
-- Minecraft
-- Gangster Luxe
-- Sakura Zen
+- Icon alignment, size normalization and spacing polish across HOME, navigation and widgets.
 
-### Compatibility
+## TEST71
 
-- ScriptHookV
-- ScriptHookVDotNet
-- Google Chrome for YouTube Music integration
-- Tested with NaturalVision Evolved (NVE)
+- Public-release build for GitHub/Nexus preparation.
+- Neutral media/provider icons.
+- Media Artwork defaults to OFF on clean installs.
+- Added single-player/network-session guard.
+- Added third-party, privacy/network and publishing documentation.
 
-### Notes
+## TEST70
 
-- Internet connection is required.
-- Some radio streams may be geo-blocked depending on the user's region.
-- Stream URLs and metadata availability are controlled by the respective radio providers.
-- UserSettings.ini is automatically created and should not be included in public releases.
+- Integrated legal/disclaimer notices into the package and INFO UI.
 
----
+## TEST69
 
-Made by **St3v3nblub**
+- Optional media-artwork control and runtime cover-cache cleanup.
+- No third-party album/track artwork bundled in the public package.
