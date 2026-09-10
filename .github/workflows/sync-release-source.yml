@@ -1,0 +1,56 @@
+name: Sync public release source
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  sync-source:
+    if: startsWith(github.event.release.tag_name, 'v1.0.1')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download release ZIP
+        run: |
+          mkdir -p /tmp/irls-release
+          gh release download "${{ github.event.release.tag_name }}" --pattern "*.zip" --dir /tmp/irls-release
+          ZIP_FILE="$(find /tmp/irls-release -maxdepth 1 -type f -name '*.zip' | head -n 1)"
+          test -n "$ZIP_FILE"
+          echo "ZIP_FILE=$ZIP_FILE" >> "$GITHUB_ENV"
+
+      - name: Extract tested package
+        run: |
+          rm -rf /tmp/irls-extracted
+          mkdir -p /tmp/irls-extracted
+          unzip -q "$ZIP_FILE" -d /tmp/irls-extracted
+
+      - name: Replace legacy source layout
+        run: |
+          rm -rf scripts
+          rm -f 03_InternetRadioSimple.3.cs InternetRadio.ini InternetRadioPlayer.ps1 YouTubeMusicBridge.ps1 YouTubeMusicCoverWorker.ps1 MinecraftGrassBlock.png SakuraZenMotif.png
+          cp -a /tmp/irls-extracted/scripts ./scripts
+          for f in DISCLAIMER_AND_LEGAL.txt THIRD_PARTY_NOTICES.txt PRIVACY_AND_NETWORK.txt INSTALLATION.txt UPDATE_AND_UNINSTALL.txt CREDITS_AND_PERMISSIONS.txt RELEASE_NOTES_v1.0.1.txt SHA256_MANIFEST.txt BUILD_PROVENANCE.txt README_DE.txt README_EN.txt LICENSE.txt PUBLISHING_NOTES_NEXUS_GITHUB.txt CHANGELOG.txt; do
+            if [ -f "/tmp/irls-extracted/$f" ]; then cp -f "/tmp/irls-extracted/$f" "./$f"; fi
+          done
+
+      - name: Commit synchronized source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Source already synchronized."
+          else
+            git commit -m "Sync source from ${{ github.event.release.tag_name }} release package"
+            git push origin HEAD:main
+          fi
