@@ -1,3 +1,16 @@
-UserSettings.ini
-*.log
-ytmusic_status.txt
+# Runtime/user files
+scripts/InternetRadio/UserSettings.ini
+scripts/InternetRadio/*.log
+scripts/InternetRadio/*_status.txt
+scripts/InternetRadio/*_result.txt
+scripts/InternetRadio/*_startup.log
+scripts/InternetRadio/spotify_commands/
+scripts/InternetRadio/ytmusic_commands/
+scripts/InternetRadio/*_covers/
+scripts/InternetRadio/*.tmp
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
