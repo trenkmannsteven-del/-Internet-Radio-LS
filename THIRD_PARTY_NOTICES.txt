@@ -1,0 +1,28 @@
+LOS SANTOS MULTIMEDIA / INTERNET RADIO LS
+THIRD-PARTY NOTICES
+PUBLIC RELEASE - TEST71
+
+This file identifies third-party products/services referenced by the mod. It does not grant any rights in those products or services.
+
+1. GRAND THEFT AUTO V / ROCKSTAR / TAKE-TWO
+This is an unofficial single-player modification. Rockstar Games and Take-Two Interactive are not affiliated with, sponsoring, endorsing, or supporting this project. All related names and marks remain the property of their respective owners.
+
+2. SPOTIFY
+The mod can detect/control a Spotify media session on the user's own Windows system. The public package does not include a Spotify logo asset. The word "Spotify" is used only to identify the compatible third-party service. Spotify software, content, trademarks, metadata and artwork remain subject to Spotify's and the relevant rights holders' terms and rights.
+
+3. YOUTUBE / YOUTUBE MUSIC / GOOGLE
+The mod can open/control YouTube Music and may read public playlist information used by its integration. The public package does not include a YouTube/YouTube Music logo asset. The names are used only to identify compatible third-party services. Google/YouTube software, content, trademarks, metadata and artwork remain subject to their terms and the relevant rights holders' rights.
+
+4. INTERNET RADIO PROVIDERS
+The included configuration contains URLs for third-party internet-radio streams. Stream availability, geographic restrictions, metadata and terms are controlled by the respective station/provider. The mod does not claim ownership of those streams. The public package uses mod-generated station/genre cards rather than bundling third-party album artwork.
+
+5. WINDOWS / POWERSHELL / MEDIA SESSIONS
+The mod uses Windows features such as PowerShell, Windows media sessions and audio-session APIs for local integration. Microsoft is not affiliated with this project.
+
+6. THIRD-PARTY MEDIA
+No licence to music, sound recordings, album/track artwork, photographs, metadata, trademarks or other third-party material is granted by this mod. Where optional runtime artwork is enabled, the feature processes media information available on the user's system and uses temporary local caching.
+
+See DISCLAIMER_AND_LEGAL.txt and PRIVACY_AND_NETWORK.txt for additional details.
+
+7. PUBLIC THEME NAMES / ORIGINAL UI ASSETS
+The public build uses generic theme names and original/mod-created UI motifs rather than shipping theme names or image assets based on unrelated third-party game brands. Older private/test builds may have used different internal theme labels.

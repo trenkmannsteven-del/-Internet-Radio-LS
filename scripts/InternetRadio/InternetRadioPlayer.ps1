@@ -21,8 +21,43 @@ $icyStreamTitle = ""
 $lastIcyPoll = Get-Date "2000-01-01"
 $icyPollSeconds = 8
 
+function Write-BoundedLog {
+    param(
+        [Parameter(Mandatory=$true)][string]$Path,
+        [Parameter(Mandatory=$true)][string]$Line
+    )
+
+    try {
+        $maxBytes = 262144
+
+        if (Test-Path -LiteralPath $Path) {
+            try {
+                $length = (Get-Item -LiteralPath $Path -ErrorAction Stop).Length
+                if ($length -ge $maxBytes) {
+                    $marker = (
+                        (Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff") +
+                        "  [LOG RESET: 256 KiB limit reached]" +
+                        [Environment]::NewLine
+                    )
+                    [IO.File]::WriteAllText(
+                        $Path,
+                        $marker,
+                        [Text.UTF8Encoding]::new($false)
+                    )
+                }
+            } catch {}
+        }
+
+        [IO.File]::AppendAllText(
+            $Path,
+            $Line + [Environment]::NewLine,
+            [Text.UTF8Encoding]::new($false)
+        )
+    } catch {}
+}
+
 function Write-Log([string]$Text) {
-    try { Add-Content -LiteralPath $logPath -Value ((Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff") + "  " + $Text) -Encoding UTF8 } catch {}
+    try { Write-BoundedLog -Path $logPath -Line ((Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff") + "  " + $Text) } catch {}
 }
 function State-Name([int]$State) {
     switch ($State) { 0{"Undefined"} 1{"Stopped"} 2{"Paused"} 3{"Playing"} 4{"ScanForward"} 5{"ScanReverse"} 6{"Buffering"} 7{"Waiting"} 8{"MediaEnded"} 9{"Transitioning"} 10{"Ready"} 11{"Reconnecting"} default{"Unknown"} }
@@ -246,8 +281,13 @@ try {
     Write-Log "WMP BEREIT"
 
     $quit=$false
+    $lastParentCheck = Get-Date "2000-01-01"
     while(-not $quit) {
-        if($ParentPid -gt 0) { $parent=Get-Process -Id $ParentPid -ErrorAction SilentlyContinue; if($null -eq $parent) { Write-Log "PARENT NICHT MEHR AKTIV - ENDE"; break } }
+        if($ParentPid -gt 0 -and ((Get-Date)-$lastParentCheck).TotalMilliseconds -ge 1000) {
+            $lastParentCheck = Get-Date
+            $parent=Get-Process -Id $ParentPid -ErrorAction SilentlyContinue
+            if($null -eq $parent) { Write-Log "PARENT NICHT MEHR AKTIV - ENDE"; break }
+        }
 
         $files = @(Get-ChildItem -LiteralPath $commandDir -Filter "*.cmd" -File -ErrorAction SilentlyContinue | Sort-Object Name)
         foreach($f in $files) {
@@ -275,7 +315,7 @@ try {
             $script:lastStatusWrite=$now
             Write-Status
         }
-        Start-Sleep -Milliseconds 25
+        Start-Sleep -Milliseconds 40
     }
 } catch { Write-Log ("PLAYER FEHLER | " + $_.Exception.ToString()) }
 finally {

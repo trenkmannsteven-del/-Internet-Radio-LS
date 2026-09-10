@@ -1,0 +1,26 @@
+LOS SANTOS MULTIMEDIA / INTERNET RADIO LS
+NEXUS MODS + GITHUB PUBLISHING NOTES
+TEST71 PUBLIC RELEASE BUILD
+
+RECOMMENDED LISTING TEXT
+- GTA V single-player only.
+- Unofficial independent mod; not affiliated with or endorsed by Rockstar Games, Take-Two, Spotify, Google/YouTube, or radio providers.
+- No music files or third-party album/track cover files are included.
+- Media Artwork is optional and defaults to OFF on fresh installs.
+- Internet access is required for radio streaming and optional third-party media integrations.
+- See DISCLAIMER_AND_LEGAL.txt, THIRD_PARTY_NOTICES.txt, and PRIVACY_AND_NETWORK.txt.
+
+SCREENSHOTS / MEDIA
+For public Nexus/GitHub screenshots, keep Media Artwork OFF unless you have verified you have permission to publish the specific artwork shown. Prefer the mod's own radio cards and neutral media placeholders.
+
+GITHUB
+- Do not commit runtime cover-cache folders/files, UserSettings.ini, status/command files, or personal logs.
+- This package includes LICENSE.txt as an all-rights-reserved project notice. Choose a standard open-source licence later only if that matches the author's intent.
+
+NEXUS MODS
+- Describe the required network access transparently.
+- Mark the project as single-player only.
+- Do not upload copyrighted music or third-party cover packs unless you have the necessary rights/permissions.
+
+RELEASE CHECK
+Before uploading, run the game with a clean install, confirm Artwork defaults to OFF, confirm the GTA Online guard disables the mod, and inspect the ZIP to make sure no generated cover-cache files are present.

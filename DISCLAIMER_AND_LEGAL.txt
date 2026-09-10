@@ -1,0 +1,81 @@
+LOS SANTOS MULTIMEDIA
+DISCLAIMER & LEGAL NOTICE
+TEST71 PUBLIC RELEASE
+
+IMPORTANT
+This document is an informational notice for this mod. It is not legal advice and does not create or replace any licence, permission, warranty, or agreement with a third-party rights holder or service provider.
+
+============================================================
+DEUTSCH
+============================================================
+
+1. INOFFIZIELLES, UNABHÄNGIGES PROJEKT
+LOS SANTOS MULTIMEDIA ist eine inoffizielle, unabhängig entwickelte und nicht-kommerzielle Spiel-Modifikation. Das Projekt ist weder mit Rockstar Games, Take-Two Interactive, Spotify, Google, YouTube noch mit anderen Drittanbietern oder Rechteinhabern verbunden, noch wird es von diesen gesponsert, unterstützt oder offiziell empfohlen.
+
+2. MARKEN UND DRITTANBIETER
+Alle Marken, Dienstleistungsmarken, Logos, Produktnamen und sonstigen Kennzeichen Dritter sind Eigentum der jeweiligen Rechteinhaber. Ihre Darstellung innerhalb der Mod dient ausschließlich der Kennzeichnung der jeweiligen Medienquelle bzw. des jeweiligen Dienstes. Aus der Darstellung folgt keine Partnerschaft, Lizenzierung oder Empfehlung des Gesamtprojekts durch den jeweiligen Markeninhaber.
+
+3. MUSIK, COVER-ARTWORK UND SONSTIGE MEDIEN
+Alle Rechte an Musik, Tonaufnahmen, Album-/Track-Artwork, Fotografien, Grafiken, Metadaten und sonstigen Medien Dritter verbleiben bei den jeweiligen Rechteinhabern. Die Bezeichnung "nicht-kommerziell" bedeutet nicht, dass urheberrechtlich geschützte Inhalte automatisch frei verwendet werden dürfen.
+
+Die Mod liefert keine Album- oder Track-Cover Dritter als Bestandteil des Installationspakets aus. Soweit der Nutzer die Funktion "Medien-Cover" aktiviert, kann die Mod zur Laufzeit Artwork aus lokal verfügbaren Medien-/Systeminformationen für die Darstellung im In-Game-Medieninterface verarbeiten und vorübergehend auf dem Computer des Nutzers zwischenspeichern.
+
+4. OPTIONALER ARTWORK-MODUS UND CACHE
+Im öffentlichen TEST71-Build ist die Darstellung von Medien-Artwork bei einer frischen Installation standardmäßig deaktiviert. Der Nutzer kann sie in den Einstellungen ausdrücklich aktivieren oder wieder deaktivieren. Bei deaktivierter Funktion sollen keine neuen Spotify-/YouTube-Cover durch die Mod erzeugt oder zwischengespeichert werden.
+
+Temporäre Artwork-Caches werden bei einem normalen Beenden der Mod/des Spiels bereinigt; zusätzlich versucht die Mod beim nächsten Start eine vorsorgliche Bereinigung. Bei einem Absturz, Stromausfall oder gewaltsamen Prozessabbruch kann nicht garantiert werden, dass temporäre Dateien sofort entfernt wurden.
+
+5. RADIO-GRAFIKEN
+Für Internetradio ohne geeignetes, zulässig verwendbares Artwork verwendet die Mod eigene generierte Sender-/Genre-Karten bzw. neutrale Platzhalter. Diese sollen nicht den Eindruck erwecken, offizielle Logos oder Cover des jeweiligen Senders/Rechteinhabers zu sein, sofern solche Inhalte nicht ausdrücklich als solche bereitgestellt oder lizenziert wurden.
+
+6. DRITTANBIETER-DIENSTE
+Funktionen im Zusammenhang mit Spotify, YouTube Music, Browsern, Windows-Mediensitzungen oder anderen Drittanbieter-Diensten können von deren Software, Nutzungsbedingungen, technischen Schnittstellen und Verfügbarkeit abhängen. Solche Dienste können ihre Funktionen oder Bedingungen jederzeit ändern. Der Nutzer ist selbst dafür verantwortlich, die jeweiligen Nutzungsbedingungen und das anwendbare Recht einzuhalten.
+
+7. KEINE RECHTEEINRÄUMUNG AN DRITTINHALTEN
+Mit der Mod werden dem Nutzer keine Rechte an Marken, Logos, Musik, Artwork, Metadaten oder sonstigen Drittinhalten eingeräumt. Rechte an Drittinhalten müssen, soweit erforderlich, separat vom jeweiligen Rechteinhaber eingeholt werden.
+
+8. SINGLEPLAYER / GTA ONLINE
+Der öffentliche Build ist ausschließlich für GTA-V-Einzelspieler vorgesehen. Erkennt die Mod eine aktive GTA-Online-/Netzwerksitzung, deaktiviert sie ihre eigenen UI-, Audio- und Fahrzeug-Effekt-Funktionen. Dieser zusätzliche Schutz stellt keine Freigabe für Online-Modding dar und umgeht keine Schutzmechanismen des Spiels.
+
+9. HAFTUNG / GEWÄHRLEISTUNG
+Die Mod wird "wie besehen" ("as is") bereitgestellt, soweit gesetzlich zulässig, ohne Zusicherung, dass Drittanbieter-Dienste, Medieninformationen oder Integrationen dauerhaft verfügbar oder unverändert bleiben. Zwingende gesetzliche Rechte und Haftungstatbestände bleiben unberührt.
+
+============================================================
+ENGLISH
+============================================================
+
+1. UNOFFICIAL, INDEPENDENT PROJECT
+LOS SANTOS MULTIMEDIA is an unofficial, independently developed, non-commercial game modification. It is not affiliated with, sponsored by, endorsed by, or officially connected with Rockstar Games, Take-Two Interactive, Spotify, Google, YouTube, or any other third-party service or rights holder.
+
+2. TRADEMARKS AND THIRD-PARTY BRANDS
+All trademarks, service marks, logos, product names, and other third-party identifiers remain the property of their respective owners. Their appearance in the mod is solely to identify the corresponding media source or service. Such use does not imply partnership, licensing of the overall project, sponsorship, or endorsement by the relevant rights holder.
+
+3. MUSIC, COVER ARTWORK, AND OTHER MEDIA
+All rights in music, sound recordings, album/track artwork, photographs, graphics, metadata, and other third-party media remain with their respective rights holders. A project being "non-commercial" does not automatically make copyrighted material free to use.
+
+The mod does not distribute third-party album or track covers as part of its installation package. If the user enables the "Media Artwork" feature, the mod may process artwork available at runtime through local media/system information for display inside the in-game media interface and may temporarily cache that artwork on the user's device.
+
+4. OPTIONAL ARTWORK MODE AND CACHE
+In the public TEST71 build, media artwork defaults to disabled on a fresh installation. Users can explicitly enable it in the mod settings and disable it again at any time. When artwork is disabled, the mod is intended not to generate or cache new Spotify/YouTube artwork.
+
+Temporary artwork caches are cleaned during a normal mod/game shutdown, and the mod also attempts preventive cleanup on the next startup. After a crash, power loss, or forced process termination, immediate deletion of every temporary file cannot be guaranteed.
+
+5. RADIO GRAPHICS
+For internet-radio content without suitable artwork that may be used, the mod uses its own generated station/genre cards or neutral placeholders. These are not intended to represent official station logos or official cover artwork unless such content is expressly provided or licensed for that use.
+
+6. THIRD-PARTY SERVICES
+Features involving Spotify, YouTube Music, browsers, Windows media sessions, or other third-party services may depend on third-party software, terms, technical interfaces, and availability. Those services may change their functionality or terms at any time. Users are responsible for complying with applicable law and the terms of the services they use.
+
+7. NO LICENCE TO THIRD-PARTY CONTENT
+The mod does not grant users any rights to third-party trademarks, logos, music, artwork, metadata, or other third-party content. Any permissions required for such content must be obtained separately from the relevant rights holder.
+
+8. SINGLE-PLAYER / GTA ONLINE
+The public build is intended only for GTA V single-player. If the mod detects an active GTA Online/network session, it disables its own UI, audio and vehicle-effect functions. This additional safeguard is not permission for online modding and does not bypass game protections.
+
+9. WARRANTY / LIABILITY
+The mod is provided "as is" to the extent permitted by law, without any guarantee that third-party services, media information, or integrations will remain available or unchanged. Mandatory statutory rights and liabilities remain unaffected.
+
+------------------------------------------------------------
+The short legal notice shown inside the INFO page is only a summary.
+This file contains the fuller project notice.
+------------------------------------------------------------

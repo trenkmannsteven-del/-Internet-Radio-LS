@@ -1,0 +1,27 @@
+LOS SANTOS MULTIMEDIA / INTERNET RADIO LS
+PRIVACY & NETWORK NOTICE
+PUBLIC RELEASE - TEST71
+
+SUMMARY
+The mod does not contain advertising, account registration, analytics, tracking pixels or developer-operated telemetry. It does require network access for functions that inherently use online services.
+
+NETWORK ACCESS USED BY THE MOD
+- Internet radio: connects to the selected third-party radio stream URL from InternetRadio.ini. The radio provider/CDN will receive normal network information required to serve the stream, such as the user's IP address.
+- YouTube Music integration: may open music.youtube.com in the user's browser and may request public YouTube/YouTube Music playlist pages or feeds needed by the playlist integration. Those requests go to Google/YouTube and are subject to their policies/terms.
+- Spotify integration: normally controls/detects an existing Spotify desktop/web media session. Opening Spotify can launch the installed Spotify app/URI or the Spotify web player. Spotify's own app/browser performs its normal network communication under Spotify's policies/terms.
+- Optional runtime artwork: artwork can be supplied through the local Windows media-session environment. If a service/browser needs to retrieve artwork, that retrieval is governed by that service/software. The mod does not bundle third-party cover files.
+
+LOCAL FILES CREATED
+The mod may create UserSettings.ini, logs, status files, command-queue files and temporary artwork cache files inside GTA V/scripts/InternetRadio/. Logs are capped to reduce uncontrolled growth.
+
+MEDIA ARTWORK
+Media Artwork defaults to OFF on a fresh TEST71 installation. If enabled, runtime cover art may be temporarily cached locally for display. Cache cleanup is attempted when artwork is disabled, bridges shut down, the game/mod exits normally, and again on the next startup. A crash or forced power/process loss may leave temporary files until the next cleanup.
+
+NO DEVELOPER TELEMETRY
+No code in this public package is intended to send usage statistics, personal settings, GTA gameplay data, media history or log files to the mod developer.
+
+SINGLE-PLAYER GUARD
+The public build checks for an active GTA Online/network session and disables its UI/audio/vehicle-effect functions when one is detected. This guard is an additional precaution and does not alter or bypass Rockstar's online protections.
+
+USER RESPONSIBILITY
+Third-party services and radio stations have their own privacy policies and terms. Users should review those policies before enabling/using the corresponding integration.

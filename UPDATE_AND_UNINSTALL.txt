@@ -1,0 +1,18 @@
+LOS SANTOS MULTIMEDIA / INTERNET RADIO LS v1.0.1 - UPDATE / UNINSTALL
+PUBLIC RELEASE - TEST71
+
+UPDATE
+1. Back up or keep GTA V/scripts/InternetRadio/UserSettings.ini if desired.
+2. Copy the new release files over the old files.
+3. If updating from a private/test build, review Media Artwork in Settings; old preferences may remain enabled.
+4. Start GTA V in Story Mode / single-player.
+
+UNINSTALL
+Remove:
+- GTA V/scripts/03_InternetRadioSimple.3.cs
+- GTA V/scripts/InternetRadio/
+
+If you want to keep personal settings for a later reinstall, back up UserSettings.ini first.
+
+RUNTIME/CACHE CLEANUP
+Removing the entire InternetRadio folder also removes mod-created status, command, log and temporary artwork-cache files stored there.

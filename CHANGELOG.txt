@@ -1,0 +1,22 @@
+TEST74.2 - SAFE CLOSE REQUEST HOTFIX
+- Built on stable TEST73; menu-close-on-press now uses a harmless request flag consumed on Tick.
+- Removed direct KeyDown state changes and GetAsyncKeyState polling.
+
+TEST73 - ICON BASELINE + NEON ACCENT BASE
+- Optische Icon-Zentrierung pro Symbol und dezenter Neon-Sockel unter den Symbolen; keine Funktionslogik geaendert.
+
+TEST72 - ICON ALIGNMENT & SPACING POLISH
+- Rein visueller Feinschliff fuer Icon-Zentrierung, optische Groesse und konsistente Abstaende in HOME, Navigation und Widgets.
+
+LOS SANTOS MULTIMEDIA / INTERNET RADIO LS v1.0.1
+PUBLIC RELEASE CHANGELOG
+
+TEST71 - Nexus Mods / GitHub Public Release Build
+- Single-player-only runtime guard added for detected GTA Online/network sessions.
+- Media Artwork defaults to OFF on fresh installations.
+- Third-party provider-logo image assets replaced by original neutral media icons.
+- Added public third-party, privacy/network, licensing and publishing notices.
+- No third-party album/track cover files included.
+- Existing artwork cache cleanup, Spotify shutdown handling, UI, radio, bass/neon and performance fixes retained.
+
+For development history, see the project's source-control history rather than shipping internal TESTxx notes in the public ZIP.

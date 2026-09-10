@@ -1,0 +1,11 @@
+INTERNET RADIO LS v1.0.1 PUBLIC BETA
+
+Public release package based on the tested TEST74.2 Safe Close Request Hotfix.
+Gameplay/runtime code is unchanged from TEST74.2; this public package only cleans test-note files and release presentation.
+
+Release scope:
+- GTA V PC single-player only
+- Media Artwork defaults to OFF on fresh installs
+- No third-party album/track cover files are bundled
+- Neutral provider/media icons are used in the public build
+- GTA Online/network-session guard remains enabled

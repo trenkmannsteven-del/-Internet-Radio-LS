@@ -1,0 +1,10 @@
+LOS SANTOS MULTIMEDIA / INTERNET RADIO LS
+PROJECT CODE & ORIGINAL ASSETS NOTICE
+
+Copyright (c) 2026 St3v3nblub. All rights reserved unless a separate licence is provided by the author.
+
+This repository/package contains original project code and original/mod-created UI assets, plus references/integration code for third-party services. No ownership is claimed over third-party trademarks, services, music, radio streams, metadata or media content.
+
+Publishing this source/package on GitHub or Nexus Mods does not, by itself, place the project in the public domain or grant an open-source licence. If the author later chooses an open-source licence, that separate licence should replace or supplement this notice.
+
+Third-party rights and notices are described in THIRD_PARTY_NOTICES.txt and DISCLAIMER_AND_LEGAL.txt.

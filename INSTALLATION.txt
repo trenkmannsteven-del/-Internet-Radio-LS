@@ -1,0 +1,52 @@
+LOS SANTOS MULTIMEDIA / INTERNET RADIO LS v1.0.1 - INSTALLATION
+PUBLIC RELEASE - TEST71
+
+IMPORTANT
+- GTA V SINGLE-PLAYER ONLY.
+- Do not use this mod as a GTA Online mod. The public build also disables its own features when it detects an active GTA Online/network session.
+- Media Artwork defaults to OFF on a fresh installation.
+
+REQUIREMENTS
+- GTA V for Windows
+- ScriptHookV
+- ScriptHookVDotNet
+- Internet connection for internet-radio streams and optional online music integrations
+- Windows PowerShell
+- Write permission for GTA V/scripts/InternetRadio/
+
+LemonUI is NOT required.
+
+INSTALL
+1. Install ScriptHookV and ScriptHookVDotNet.
+2. Extract this archive.
+3. Copy the included "scripts" folder into your GTA V root folder.
+4. Make sure your Windows user has write permission for GTA V/scripts/InternetRadio/.
+5. Start GTA V in Story Mode / single-player.
+6. Enter a supported vehicle and press NUM0.
+
+FIRST START
+UserSettings.ini is created automatically inside:
+GTA V/scripts/InternetRadio/
+
+The mod also creates small runtime status/command files and capped diagnostic logs when required. Media Artwork is OFF by default. If the user enables it, temporary artwork-cache files may be created and are subject to the cleanup described in PRIVACY_AND_NETWORK.txt.
+
+UPDATE
+Keep your existing UserSettings.ini if you want to preserve personal settings. Note: an older UserSettings.ini may keep Media Artwork enabled from a previous private/test build. For the conservative public-release setting, switch Media Artwork to OFF in Settings.
+
+GEO-BLOCKED / UNWANTED STATIONS
+Open InternetRadio.ini and change the station from Enabled=true to Enabled=false. Press F8 in-game to reload the configuration or restart GTA V.
+
+MUSIC SERVICE NOTES
+- Google Chrome has been tested with YouTube Music.
+- Spotify Desktop is recommended.
+- Spotify Web Player media-session fallback is included for Chrome / Edge / Firefox.
+- Public service tiles use neutral project icons, not provider-logo files.
+
+BASS ANALYZER
+The optional beat-neon system can use scripts/InternetRadio/BassAnalyzerBridge.ps1. If it cannot run, the mod automatically uses its fallback detector.
+
+READ BEFORE PUBLIC REDISTRIBUTION
+DISCLAIMER_AND_LEGAL.txt
+THIRD_PARTY_NOTICES.txt
+PRIVACY_AND_NETWORK.txt
+LICENSE.txt

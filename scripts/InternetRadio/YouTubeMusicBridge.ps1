@@ -2,7 +2,8 @@
     [Parameter(Mandatory=$true)][string]$BaseDir,
     [int]$ParentPid = 0,
     [int]$AutoLaunch = 1,
-    [int]$AutoPlay = 1
+    [int]$AutoPlay = 1,
+    [int]$ArtworkEnabled = 0
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,9 +19,47 @@ $script:coverWorkerStarted = Get-Date "2000-01-01"
 $script:coverLastAttempt = @{}
 $script:launchedByBridge = $false
 $script:autoLaunchAttempted = $false
+$script:lastYtUiScan = Get-Date "2000-01-01"
+$script:lastYtUiPresent = $false
+$script:artworkEnabled = ([int]$ArtworkEnabled -ne 0)
+
+function Write-BoundedLog {
+    param(
+        [Parameter(Mandatory=$true)][string]$Path,
+        [Parameter(Mandatory=$true)][string]$Line
+    )
+
+    try {
+        $maxBytes = 262144
+
+        if (Test-Path -LiteralPath $Path) {
+            try {
+                $length = (Get-Item -LiteralPath $Path -ErrorAction Stop).Length
+                if ($length -ge $maxBytes) {
+                    $marker = (
+                        (Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff") +
+                        "  [LOG RESET: 256 KiB limit reached]" +
+                        [Environment]::NewLine
+                    )
+                    [IO.File]::WriteAllText(
+                        $Path,
+                        $marker,
+                        [Text.UTF8Encoding]::new($false)
+                    )
+                }
+            } catch {}
+        }
+
+        [IO.File]::AppendAllText(
+            $Path,
+            $Line + [Environment]::NewLine,
+            [Text.UTF8Encoding]::new($false)
+        )
+    } catch {}
+}
 
 function Write-Log([string]$Text) {
-    try { Add-Content -LiteralPath $logPath -Value ((Get-Date).ToString("yyyy-MM-dd HH:mm:ss.fff") + "  " + $Text) -Encoding UTF8 } catch {}
+    try { Write-BoundedLog -Path $logPath -Line ((Get-Date).ToString("yyyy-MM-dd HH:mm:ss.fff") + "  " + $Text) } catch {}
 }
 function To-B64([string]$Text) {
     if($null -eq $Text) { $Text = "" }
@@ -62,7 +101,7 @@ function Is-YtMusicText([string]$Text) {
     return ($t.Contains("youtube music") -or $t.Contains("music.youtube.com"))
 }
 
-function Test-YoutubeMusicUi {
+function Test-YoutubeMusicUiRaw {
     $browserNames = @("chrome", "msedge", "firefox")
     foreach($name in $browserNames) {
         try {
@@ -97,6 +136,19 @@ function Test-YoutubeMusicUi {
         }
     }
     return $false
+}
+
+function Test-YoutubeMusicUi {
+    # TEST59: UI Automation can be surprisingly expensive with many browser tabs.
+    # Cache the result briefly; command/detection logic stays responsive while the
+    # background bridge avoids repeatedly walking the whole browser accessibility tree.
+    $now = Get-Date
+    if(($now - $script:lastYtUiScan).TotalMilliseconds -lt 700) { return $script:lastYtUiPresent }
+    $script:lastYtUiScan = $now
+    $present = $false
+    try { $present = [bool](Test-YoutubeMusicUiRaw) } catch { $present = $false }
+    $script:lastYtUiPresent = $present
+    return $present
 }
 
 function Find-BrowserExe([string]$Browser) {
@@ -927,10 +979,21 @@ function Reset-MediaManager([string]$Reason) {
     [void](Ensure-Manager)
 }
 
+function Is-SpotifySource([string]$Source) {
+    if([string]::IsNullOrWhiteSpace($Source)) { return $false }
+    return ([string]$Source).ToLowerInvariant().Contains("spotify")
+}
+
+function Is-ExplicitYoutubeSource([string]$Source) {
+    if([string]::IsNullOrWhiteSpace($Source)) { return $false }
+    $s = ([string]$Source).ToLowerInvariant()
+    return ($s.Contains("youtube") -or $s.Contains("ytmusic"))
+}
+
 function Is-BrowserSource([string]$Source) {
     $s = ""
     if($null -ne $Source) { $s = ([string]$Source).ToLowerInvariant() }
-    return ($s.Contains("chrome") -or $s.Contains("msedge") -or $s.Contains("edge") -or $s.Contains("firefox") -or $s.Contains("youtube") -or $s.Contains("ytmusic"))
+    return ($s.Contains("chrome") -or $s.Contains("msedge") -or $s.Contains("edge") -or $s.Contains("firefox") -or (Is-ExplicitYoutubeSource $Source))
 }
 
 function Get-SessionInfo([object]$Session) {
@@ -972,33 +1035,47 @@ function Get-PreferredMediaSession {
     if(-not (Ensure-Manager)) { return $null }
     $best = $null
     $all = @()
-    $browserInfos = @()
+    $youtubeInfos = @()
+    $ytUiPresent = $false
+    try { $ytUiPresent = Test-YoutubeMusicUi } catch {}
+
     try {
         $sessions = $script:manager.GetSessions()
         foreach($session in $sessions) {
             $info = Get-SessionInfo $session
             $all += ,$info
-            if(Is-BrowserSource ([string]$info.Source)) { $browserInfos += ,$info }
+
+            # TEST15: Never allow Spotify's desktop GSMTC session to become YouTube Music.
+            # Generic browser sessions are accepted only while a real YouTube Music tab/PWA
+            # is present. This removes the old fallback that could select Spotify/VLC/etc.
+            $src = [string]$info.Source
+            if(Is-SpotifySource $src) { continue }
+            if(Is-ExplicitYoutubeSource $src) {
+                $youtubeInfos += ,$info
+            } elseif($ytUiPresent -and (Is-BrowserSource $src)) {
+                $youtubeInfos += ,$info
+            }
         }
     } catch {
         Write-Log ("GET SESSIONS FEHLER | " + $_.Exception.Message)
     }
 
-    # Prefer browser media sessions only. This prevents Spotify/VLC/etc. from winning
-    # while the user is selecting YouTube Music.
-    $pool = if($browserInfos.Count -gt 0) { $browserInfos } else { $all }
-    foreach($info in $pool) {
+    # Strict YouTube-only pool. IMPORTANT: no fallback to $all.
+    foreach($info in $youtubeInfos) {
         if($null -eq $best -or [int]$info.Score -gt [int]$best.Score) { $best = $info }
     }
 
-    if($all.Count -eq 0) {
+    if($null -eq $best) {
         try {
             $cur = $script:manager.GetCurrentSession()
             if($null -ne $cur) {
                 $curInfo = Get-SessionInfo $cur
-                $all += ,$curInfo
-                if(Is-BrowserSource ([string]$curInfo.Source)) { $best = $curInfo }
-                elseif($null -eq $best) { $best = $curInfo }
+                $src = [string]$curInfo.Source
+                if(-not (Is-SpotifySource $src)) {
+                    if((Is-ExplicitYoutubeSource $src) -or ($ytUiPresent -and (Is-BrowserSource $src))) {
+                        $best = $curInfo
+                    }
+                }
             }
         } catch {}
     }
@@ -1006,13 +1083,13 @@ function Get-PreferredMediaSession {
     # During manual YT selection, force a fresh WinRT manager if Chrome created its
     # media session after this helper started. Some Windows builds otherwise expose
     # the new session late.
-    if($all.Count -eq 0 -and (Get-Date) -lt $script:aggressiveDetectUntil) {
+    if($null -eq $best -and (Get-Date) -lt $script:aggressiveDetectUntil) {
         if(((Get-Date)-$script:lastManagerRefresh).TotalSeconds -ge 2.0) {
-            Reset-MediaManager "AGGRESSIVE DETECT - NO SESSIONS"
+            Reset-MediaManager "AGGRESSIVE DETECT - NO YT SESSION"
         }
     }
 
-    if($null -ne $best -and $null -ne $best.Session -and (Is-BrowserSource ([string]$best.Source))) {
+    if($null -ne $best -and $null -ne $best.Session) {
         $useful = ($best.State -eq "Playing" -or $best.State -eq "Paused" -or -not [string]::IsNullOrWhiteSpace([string]$best.Title) -or -not [string]::IsNullOrWhiteSpace([string]$best.Artist))
         if($useful) {
             $script:lastGoodInfo = $best
@@ -1020,10 +1097,12 @@ function Get-PreferredMediaSession {
         }
     }
 
-    # Song changes can briefly remove the browser GSMTC session. Keep the last
-    # known session for a short grace window so GTA does not lose YT mode/metadata.
+    # Keep only a previously validated YouTube/browser session for a short song-change grace window.
     if($null -eq $best -and $null -ne $script:lastGoodInfo -and ((Get-Date)-$script:lastGoodAt).TotalSeconds -le 3.5) {
-        $best = $script:lastGoodInfo
+        $lastSrc = [string]$script:lastGoodInfo.Source
+        if(-not (Is-SpotifySource $lastSrc) -and ((Is-ExplicitYoutubeSource $lastSrc) -or ($ytUiPresent -and (Is-BrowserSource $lastSrc)))) {
+            $best = $script:lastGoodInfo
+        }
     }
 
     if(((Get-Date)-$script:lastSessionScanLog).TotalSeconds -ge 8) {
@@ -1031,11 +1110,12 @@ function Get-PreferredMediaSession {
         if($all.Count -eq 0) {
             Write-Log "SESSION SCAN | 0 Sessions gefunden"
         } else {
-            Write-Log ("SESSION SCAN | " + $all.Count + " Sessions | Browser=" + $browserInfos.Count)
+            Write-Log ("SESSION SCAN | " + $all.Count + " Sessions | YT candidates=" + $youtubeInfos.Count + " | YT UI=" + $ytUiPresent)
             foreach($i in $all) {
                 Write-Log ("  SOURCE=" + $i.Source + " | STATE=" + $i.State + " | SCORE=" + $i.Score + " | TITLE=" + $i.Title + " | ARTIST=" + $i.Artist)
             }
-            if($null -ne $best) { Write-Log ("  AUSGEWAEHLT=" + $best.Source + " | " + $best.Title) }
+            if($null -ne $best) { Write-Log ("  YT AUSGEWAEHLT=" + $best.Source + " | " + $best.Title) }
+            else { Write-Log "  YT AUSGEWAEHLT=<none>" }
         }
     }
     return $best
@@ -1132,6 +1212,19 @@ function Stop-CoverWorker([string]$Reason) {
     $script:coverWorkerKey = ""
 }
 
+function Clear-CoverCache([string]$Reason) {
+    try {
+        Stop-CoverWorker $Reason
+        if(Test-Path -LiteralPath $coverDir) {
+            Get-ChildItem -LiteralPath $coverDir -File -ErrorAction SilentlyContinue | ForEach-Object {
+                try { Remove-Item -LiteralPath $_.FullName -Force -ErrorAction Stop } catch {}
+            }
+        }
+        $script:coverLastAttempt = @{}
+        Write-Log ("ARTWORK CACHE CLEAR | " + $Reason)
+    } catch { Write-Log ("ARTWORK CACHE CLEAR ERROR | " + $_.Exception.Message) }
+}
+
 function Maintain-CoverWorker {
     if($null -eq $script:coverWorker){ return }
     try {
@@ -1187,7 +1280,7 @@ function Get-MediaSnapshot {
     $source = ""
     $cover = ""
     try {
-        Maintain-CoverWorker
+        if($script:artworkEnabled) { Maintain-CoverWorker }
         $info = Get-PreferredMediaSession
         if($null -ne $info -and $null -ne $info.Session) {
             $available = $true
@@ -1196,9 +1289,11 @@ function Get-MediaSnapshot {
             $artist = [string]$info.Artist
             $album = [string]$info.Album
             $source = [string]$info.Source
-            $key = Get-CoverKey $source $title $artist $album
-            $cover = Get-CachedCover $key
-            if([string]::IsNullOrWhiteSpace($cover)) { Start-CoverWorker $key $title $artist }
+            if($script:artworkEnabled) {
+                $key = Get-CoverKey $source $title $artist $album
+                $cover = Get-CachedCover $key
+                if([string]::IsNullOrWhiteSpace($cover)) { Start-CoverWorker $key $title $artist }
+            }
         }
     } catch { Write-Log ("SNAPSHOT FEHLER | " + $_.Exception.Message) }
     return @{
@@ -1309,6 +1404,8 @@ function Run-TransportCommandSafe([string]$Action) {
 try {
     New-Item -ItemType Directory -Path $commandDir -Force | Out-Null
     New-Item -ItemType Directory -Path $coverDir -Force | Out-Null
+    if(-not $script:artworkEnabled) { Clear-CoverCache "START DISABLED" }
+    Write-Log ("ARTWORK INITIAL=" + $script:artworkEnabled)
     # Alte V12.7-Rohcover koennen DirectX-Texture-Fehler ausloesen. Sie werden nie wieder verwendet.
     try {
         Get-ChildItem -LiteralPath $coverDir -File -ErrorAction SilentlyContinue |
@@ -1316,9 +1413,11 @@ try {
             Remove-Item -Force -ErrorAction SilentlyContinue
     } catch {}
     try { Remove-Item -LiteralPath $statusPath -Force -ErrorAction SilentlyContinue } catch {}
-    try { Get-ChildItem -LiteralPath $commandDir -Filter "*.cmd" -File -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue } catch {}
+    # TEST55: Do NOT clear *.cmd here. The C# side already clears stale commands before
+    # launching this helper. Clearing the queue again inside helper startup races with the
+    # first OPEN_HOME command (Num5), so the first press can be deleted before it is read.
     # V12.7: Cover-Lesen laeuft in einem separaten Prozess mit hartem Timeout.
-    Write-Log "YOUTUBE MUSIC BRIDGE V12.35 START - HOME VARIABLE FIX + ROBUST GSMTC DETECTION"
+    Write-Log "YOUTUBE MUSIC BRIDGE V12.36 TEST55 START - FIRST NUM5 QUEUE RACE FIX"
     [void](Ensure-Manager)
     Start-YoutubeMusicAutomatically
     $quit = $false
@@ -1328,17 +1427,17 @@ try {
     $playlistPlayAt = $null
     $playlistPlayAttempts = 0
     $playlistStartedAt = $null
+    $lastParentCheck = Get-Date "2000-01-01"
     while(-not $quit) {
         Maintain-CoverWorker
-        if($ParentPid -gt 0) {
+        if($ParentPid -gt 0 -and ((Get-Date)-$lastParentCheck).TotalMilliseconds -ge 1000) {
+            $lastParentCheck = Get-Date
             $parent = Get-Process -Id $ParentPid -ErrorAction SilentlyContinue
             if($null -eq $parent) {
-                Write-Log ("PARENT ENDE | MANAGED=" + $managedActive)
-                if($managedActive -or $script:launchedByBridge) {
-                    Stop-And-CloseManagedYoutube "PARENT ENDE"
-                    $managedActive = $false
-                    $script:launchedByBridge = $false
-                }
+                Write-Log ("PARENT ENDE | FORCE CLOSE | MANAGED=" + $managedActive)
+                Stop-And-CloseManagedYoutube "PARENT ENDE"
+                $managedActive = $false
+                $script:launchedByBridge = $false
                 break
             }
         }
@@ -1395,6 +1494,8 @@ try {
             }
             if($action -eq "MODE_ON") { $managedActive = $true; Write-Log "MANAGED MODE ON" }
             elseif($action -eq "MODE_OFF") { $managedActive = $false; Write-Log "MANAGED MODE OFF" }
+            elseif($action -eq "ARTWORK_ON") { $script:artworkEnabled = $true; Write-Log "ARTWORK ON"; Write-Status }
+            elseif($action -eq "ARTWORK_OFF") { $script:artworkEnabled = $false; Clear-CoverCache "ARTWORK OFF"; Write-Status }
             elseif($action -eq "DETECT") {
                 # V12.28: Detection only. Browser opening is handled by the visible GTA process.
                 $script:aggressiveDetectUntil = (Get-Date).AddSeconds(20)
@@ -1422,11 +1523,9 @@ try {
                 $managedActive = $false
             }
             elseif($action -eq "QUIT") {
-                if($managedActive -or $script:launchedByBridge) {
-                    Stop-And-CloseManagedYoutube "QUIT"
-                    $managedActive = $false
-                    $script:launchedByBridge = $false
-                }
+                Stop-And-CloseManagedYoutube "QUIT"
+                $managedActive = $false
+                $script:launchedByBridge = $false
                 $quit = $true
             }
             elseif($action -eq "REFRESH") { Write-Status }
@@ -1442,7 +1541,7 @@ try {
     }
 } catch { Write-Log ("FATAL | " + $_.Exception.ToString()) }
 finally {
-    Stop-CoverWorker "BRIDGE ENDE"
+    Clear-CoverCache "BRIDGE ENDE"
     if($managedActive -or $script:launchedByBridge) {
         try { Stop-And-CloseManagedYoutube "FINALLY" } catch {}
         $managedActive = $false

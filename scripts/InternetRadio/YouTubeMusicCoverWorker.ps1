@@ -10,8 +10,43 @@ $coverDir = Join-Path $BaseDir "ytmusic_covers"
 $logPath = Join-Path $BaseDir "ytmusic_cover_worker.log"
 New-Item -ItemType Directory -Path $coverDir -Force | Out-Null
 
+function Write-BoundedLog {
+    param(
+        [Parameter(Mandatory=$true)][string]$Path,
+        [Parameter(Mandatory=$true)][string]$Line
+    )
+
+    try {
+        $maxBytes = 262144
+
+        if (Test-Path -LiteralPath $Path) {
+            try {
+                $length = (Get-Item -LiteralPath $Path -ErrorAction Stop).Length
+                if ($length -ge $maxBytes) {
+                    $marker = (
+                        (Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff") +
+                        "  [LOG RESET: 256 KiB limit reached]" +
+                        [Environment]::NewLine
+                    )
+                    [IO.File]::WriteAllText(
+                        $Path,
+                        $marker,
+                        [Text.UTF8Encoding]::new($false)
+                    )
+                }
+            } catch {}
+        }
+
+        [IO.File]::AppendAllText(
+            $Path,
+            $Line + [Environment]::NewLine,
+            [Text.UTF8Encoding]::new($false)
+        )
+    } catch {}
+}
+
 function Log([string]$s) {
-    try { Add-Content -LiteralPath $logPath -Value ((Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff") + "  " + $s) -Encoding UTF8 } catch {}
+    try { Write-BoundedLog -Path $logPath -Line ((Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff") + "  " + $s) } catch {}
 }
 function From-B64([string]$s) {
     try { if([string]::IsNullOrWhiteSpace($s)){return ""}; return [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($s)) } catch { return "" }
@@ -39,6 +74,41 @@ function Await-WinRT([object]$Operation, [Type]$ResultType) {
     $task = $m.Invoke($null, @($Operation))
     $task.Wait()
     return $task.Result
+}
+
+function New-RoundedRectPath([float]$x, [float]$y, [float]$w, [float]$h, [float]$radius) {
+    $d = [Math]::Max(2.0, [Math]::Min([Math]::Min($w, $h), $radius * 2.0))
+    $p = New-Object Drawing.Drawing2D.GraphicsPath
+    $p.AddArc($x, $y, $d, $d, 180, 90)
+    $p.AddArc($x + $w - $d, $y, $d, $d, 270, 90)
+    $p.AddArc($x + $w - $d, $y + $h - $d, $d, $d, 0, 90)
+    $p.AddArc($x, $y + $h - $d, $d, $d, 90, 90)
+    $p.CloseFigure()
+    return $p
+}
+
+function Draw-YouTubeArtworkCard([Drawing.Graphics]$gfx, [Drawing.Image]$img, [int]$side) {
+    # TEST69: provider artwork is kept in its original form. It is only scaled
+    # proportionally to fit inside a neutral card; no crop, blur, tint or overlay.
+    $gfx.Clear([Drawing.Color]::FromArgb(255, 18, 18, 18))
+    $margin = 8
+    $maxW = $side - ($margin * 2)
+    $maxH = $side - ($margin * 2)
+    $scale = [Math]::Min($maxW / [double]$img.Width, $maxH / [double]$img.Height)
+    $dw = [Math]::Max(1, [int][Math]::Round($img.Width * $scale))
+    $dh = [Math]::Max(1, [int][Math]::Round($img.Height * $scale))
+    $dx = [int](($side - $dw) / 2)
+    $dy = [int](($side - $dh) / 2)
+    $radius = 8
+    $artPath = New-RoundedRectPath $dx $dy $dw $dh $radius
+    try {
+        $gfx.SetClip($artPath)
+        $gfx.DrawImage($img, $dx, $dy, $dw, $dh)
+    } finally {
+        $gfx.ResetClip()
+    }
+    $framePen = New-Object Drawing.Pen([Drawing.Color]::FromArgb(76, 255, 255, 255), 1.0)
+    try { $gfx.DrawPath($framePen, $artPath) } finally { $framePen.Dispose(); $artPath.Dispose() }
 }
 
 # IRandomAccessStream -> COM IStream. Dieser Prozess ist absichtlich isoliert und darf
@@ -182,13 +252,11 @@ try {
         $gfx.InterpolationMode = [Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
         $gfx.SmoothingMode = [Drawing.Drawing2D.SmoothingMode]::HighQuality
         $gfx.PixelOffsetMode = [Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+        $gfx.CompositingQuality = [Drawing.Drawing2D.CompositingQuality]::HighQuality
 
-        $scale = [Math]::Min($side / [double]$img.Width, $side / [double]$img.Height)
-        $dw = [Math]::Max(1, [int][Math]::Round($img.Width * $scale))
-        $dh = [Math]::Max(1, [int][Math]::Round($img.Height * $scale))
-        $dx = [int](($side - $dw) / 2)
-        $dy = [int](($side - $dh) / 2)
-        $gfx.DrawImage($img, $dx, $dy, $dw, $dh)
+        # TEST63: premium media-card composition with a soft full-bleed backdrop,
+        # centered sharp artwork, rounded corners and restrained accent lighting.
+        Draw-YouTubeArtworkCard $gfx $img $side
         $gfx.Dispose(); $gfx = $null
         $bmp.Save($tmp, [Drawing.Imaging.ImageFormat]::Png)
     } catch {
@@ -218,13 +286,13 @@ try {
     $readyInfo = Get-Item -LiteralPath $final
     Log ("COVER READY NORMALIZED | " + $final + " | " + $readyInfo.Length + " Bytes | 512x512")
 
-    # V12.13: Cover-Cache begrenzen. Immer nur die 3 neuesten validierten Cover behalten.
+    # V12.13: Cover-Cache begrenzen. TEST69 behaelt nur das aktuellste validierte Cover.
     # Die Bereinigung laeuft hier im externen Worker und niemals im GTA-Frame-Renderer.
     try {
         $readyCovers = @(Get-ChildItem -LiteralPath $coverDir -File -Filter "ytm_ready_*.png" -ErrorAction SilentlyContinue |
             Sort-Object LastWriteTimeUtc -Descending)
-        if($readyCovers.Count -gt 3) {
-            $oldCovers = @($readyCovers | Select-Object -Skip 3)
+        if($readyCovers.Count -gt 1) {
+            $oldCovers = @($readyCovers | Select-Object -Skip 1)
             foreach($oldCover in $oldCovers) {
                 try {
                     Remove-Item -LiteralPath $oldCover.FullName -Force -ErrorAction Stop
@@ -234,7 +302,7 @@ try {
                 }
             }
         }
-        Log ("COVER CACHE | Behalten=" + ([Math]::Min(3, $readyCovers.Count)) + " | Gefunden=" + $readyCovers.Count)
+        Log ("COVER CACHE | Behalten=" + ([Math]::Min(1, $readyCovers.Count)) + " | Gefunden=" + $readyCovers.Count)
     } catch {
         Log ("COVER CACHE FEHLER | " + $_.Exception.Message)
     }

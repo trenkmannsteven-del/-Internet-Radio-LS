@@ -1,0 +1,25 @@
+LOS SANTOS MULTIMEDIA / INTERNET RADIO LS v1.0.1
+PUBLIC RELEASE - TEST71
+Created by St3v3nblub
+
+CREDITS
+- ScriptHookV developers
+- ScriptHookVDotNet developers and contributors
+- GTA V modding community
+- Testers and users who provided feedback
+- Internet radio stations and streaming providers supplying their own streams
+
+ORIGINAL PUBLIC-RELEASE ASSETS
+The public package uses original/mod-created neutral UI icons and generic public theme names. It does not bundle Spotify, YouTube/YouTube Music, album-cover or track-cover image assets.
+
+THIRD-PARTY IDENTIFICATION
+Names such as Grand Theft Auto V, Rockstar Games, Spotify, YouTube Music, Google, Windows and individual radio services are used only where needed to identify compatibility, requirements, or the corresponding third-party service. No affiliation, sponsorship or endorsement is claimed.
+
+RIGHTS / PERMISSIONS
+No rights to third-party trademarks, music, sound recordings, artwork, metadata, streams or other third-party content are granted by this package. See THIRD_PARTY_NOTICES.txt and DISCLAIMER_AND_LEGAL.txt.
+
+NETWORK / PRIVACY
+See PRIVACY_AND_NETWORK.txt for a plain-language description of network connections, local runtime files and artwork caching.
+
+PROJECT CODE / ORIGINAL ASSETS
+See LICENSE.txt for the project's own code/original-asset rights notice.
