@@ -1,137 +1,102 @@
-# Internet Radio LS
+# Internet Radio LS / Los Santos Multimedia
 
-Internet Radio LS adds real internet radio stations to GTA V with categories, favorites, live metadata, YouTube Music integration, multiple themes and a live audio visualizer.
+**Public Beta v1.0.1 — based on the tested TEST74.2 hotfix**
 
-## Features
+Internet Radio LS adds an in-game multimedia/head-unit style interface to **GTA V single-player** with real internet radio, favorites, live metadata where available, YouTube Music and Spotify media-session integration, multiple themes, a visualizer, audio ducking and optional audio-reactive vehicle lighting.
 
-- 61 real internet radio stations
-- 10 radio categories
-- 13 selectable themes
-- 3 selectable interface languages
-- Favorites system with up to 6 slots
-- Live metadata where supported
+> **Single-player only.** The public build includes a GTA Online/network-session guard that disables the mod when an online/network session is detected.
+
+## Download
+
+The ready-to-install package is in:
+
+`dist/Internet-Radio-LS-v1.0.1-public-beta.zip`
+
+## Highlights
+
+- 61 internet radio stations in 10 categories
+- 13 visual themes
+- 7 UI languages: English, German, Spanish, French, Italian, Portuguese (Brazil), Turkish
+- up to 6 favorite stations
+- live station metadata where supported
 - YouTube Music integration
-- Live audio-reactive visualizer
-- Dialogue, phone and menu ducking
-- Adjustable volume step
-- Mini radio UI while driving
-- Category-based station colors
-- Automatic user settings file
-- F8 configuration reload
+- Spotify integration
+- separate service volume handling
+- compact driving HUD and volume HUD
+- dialogue / phone / menu / Los Santos Customs ducking
+- live audio visualizer
+- optional bass-reactive vehicle neon and cabin light
+- safe low-frequency analyzer fallback
+- automatic user settings
+- runtime log-size protection
 
 ## Requirements
 
-- Grand Theft Auto V
+- GTA V for Windows
 - ScriptHookV
 - ScriptHookVDotNet
-- Internet connection
+- Windows PowerShell
+- Internet connection for radio streams and optional online media integrations
 
-LemonUI is not required.
-
-Google Chrome is recommended for YouTube Music integration.
+LemonUI is **not required**.
 
 ## Installation
 
-1. Copy the included files into your GTA V `scripts` folder.
-2. Keep the `InternetRadio` folder structure intact.
-3. Start GTA V.
-4. Internet Radio LS will automatically create `UserSettings.ini` on first launch.
-
-The folder:
-
-`GTA V/scripts/InternetRadio`
-
-must have write permission because the mod creates and updates settings, status and runtime files.
+1. Download `dist/Internet-Radio-LS-v1.0.1-public-beta.zip`.
+2. Extract it into the GTA V installation directory.
+3. Keep the included `scripts/InternetRadio/` folder structure intact.
+4. Make sure `GTA V/scripts/InternetRadio/` is writable by your Windows user account.
+5. Start GTA V in single-player, enter a supported vehicle and press `NUM0`.
 
 ## Controls
 
-- `NUM0` - Open / close radio menu
-- `NUM8 / NUM2` - Navigate up / down
-- `NUM4 / NUM6` - Previous / next page or option
-- `NUM5` - Select
-- `NUM1` - Radio power / play-pause depending on page
-- `NUM3` - Stop radio
-- `NUM- / NUM+` - Volume down / up
-- `SPACE` - Add / remove favorite
-- `F8` - Reload configuration
+| Key | Action |
+|---|---|
+| `NUM0` | Open / close multimedia menu |
+| `NUM8 / NUM2` | Navigate up/down; app selection on HOME |
+| `NUM4 / NUM6` | Change tab / previous-next where supported |
+| `NUM5` | Select / open app / activate service |
+| `NUM1` | Radio power or play/pause depending on page |
+| `NUM3` | Stop radio / pause media service depending on page |
+| `NUM- / NUM+` | Volume down / up |
+| `SPACE` | Add / remove favorite on Stations page |
+| `F8` | Reload configuration |
 
-## Themes
+## Media Artwork & Privacy
 
-1. Modern Green
-2. OEM Blue
-3. Red Sport
-4. Amber Classic
-5. Minimal White
-6. Spectrum
-7. GTA Vice City
-8. GTA San Andreas
-9. Cyberpunk Neon
-10. NFS Underground 2
-11. Minecraft
-12. Gangster Luxe
-13. Sakura Zen
+The public build does **not** bundle third-party album/track artwork. **Media Artwork defaults to OFF** on fresh installations. If the user explicitly enables it, artwork may be read from locally available media-session information and cached temporarily for the in-game interface. Runtime caches are cleaned by the mod and again on the next start where applicable.
 
-## Custom Stations
+The mod does not include developer telemetry or analytics. Internet access is used for the radio streams and optional media-service integration required by the feature set.
 
-Stations can be added manually in:
+See:
 
-`InternetRadio.ini`
+- `DISCLAIMER_AND_LEGAL.txt`
+- `THIRD_PARTY_NOTICES.txt`
+- `PRIVACY_AND_NETWORK.txt`
 
-Continue the station numbering and add the direct stream URL.
+## Public-release branding
 
-Example:
+The public build uses neutral/mod-created media icons. No Spotify or YouTube logo files and no third-party album artwork are bundled in the package.
 
-```ini
-[Station62]
-Enabled=true
-Name=PowerTürk
-Pack=TURKISH RADIO
-Genre=Turkish Pop
-Region=Turkey
-Vibe=Turkish Pop / Hits
-Url=https://listen.powerapp.com.tr/powerturk/128/icecast.audio
+## Source layout
 
-After editing the file, press F8 in-game or restart GTA V.
+- `scripts/03_InternetRadioSimple.3.cs` — GTA/ScriptHookVDotNet controller and UI
+- `scripts/InternetRadio/*.ps1` — radio/media/analyzer helper processes
+- `scripts/InternetRadio/InternetRadio.ini` — station and default configuration
+- `scripts/InternetRadio/*.png` — original/mod-created UI assets used by the public build
 
-Geo-Blocking
+## Known limitations
 
-Some radio stations may be unavailable depending on your country or region.
+- Third-party radio streams can go offline, change URL, or be geo-blocked.
+- YouTube Music / Spotify media-session behavior depends on Windows, the browser/app and the third-party service.
+- A hard process crash can leave temporary runtime files behind; the mod performs startup cleanup where applicable.
 
-If a station does not work, you can disable it by changing:
+## License & legal
 
-Enabled=true
+Project code and original/mod-created assets are currently published under an **All Rights Reserved** project notice. Publishing the source on GitHub does not grant a general open-source license.
 
-to:
+This is an unofficial independent fan-made modification. It is not affiliated with, endorsed by, sponsored by, or officially connected with Rockstar Games, Take-Two Interactive, Spotify, Google, YouTube, or any radio/stream provider.
 
-Enabled=false
+Third-party names and service references are used for identification of supported integrations only. All third-party rights remain with their respective owners.
 
-Stream URLs can also change over time because they are controlled by the radio providers.
-
-User Settings
-
-UserSettings.ini is created automatically for every user and should not be included in public release packages.
-
-It stores personal settings such as volume, theme, favorites and other preferences.
-
-Compatibility
-
-Tested with:
-
-GTA V
-Google Chrome for YouTube Music
-NaturalVision Evolved (NVE)
-Support
-
-If you enjoy the mod and want to support development:
-
-https://ko-fi.com/st3v3nblub
-
-Author
-
-Made by St3v3nblub
-
-Disclaimer
-
-Internet Radio LS is an independent fan-made GTA V mod.
-
-It is not affiliated with Rockstar Games, Google, YouTube, NaturalVision Evolved, or any of the included radio stations or stream providers.
+See `LICENSE`, `DISCLAIMER_AND_LEGAL.txt` and `THIRD_PARTY_NOTICES.txt` for details.
