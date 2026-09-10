@@ -8,9 +8,11 @@ Internet Radio LS adds an in-game multimedia/head-unit style interface to **GTA 
 
 ## Download
 
-The ready-to-install package is in:
+Use the latest package from the **GitHub Releases** page:
 
-`dist/Internet-Radio-LS-v1.0.1-public-beta.zip`
+https://github.com/trenkmannsteven-del/-Internet-Radio-LS/releases
+
+The v1.0.1 public-beta package is built from the tested TEST74.2 code path.
 
 ## Highlights
 
@@ -42,7 +44,7 @@ LemonUI is **not required**.
 
 ## Installation
 
-1. Download `dist/Internet-Radio-LS-v1.0.1-public-beta.zip`.
+1. Download the latest ZIP from GitHub Releases.
 2. Extract it into the GTA V installation directory.
 3. Keep the included `scripts/InternetRadio/` folder structure intact.
 4. Make sure `GTA V/scripts/InternetRadio/` is writable by your Windows user account.
@@ -79,6 +81,8 @@ See:
 The public build uses neutral/mod-created media icons. No Spotify or YouTube logo files and no third-party album artwork are bundled in the package.
 
 ## Source layout
+
+After a v1.0.1 release is published, the release-sync workflow updates the repository source tree from the tested release ZIP:
 
 - `scripts/03_InternetRadioSimple.3.cs` — GTA/ScriptHookVDotNet controller and UI
 - `scripts/InternetRadio/*.ps1` — radio/media/analyzer helper processes
