@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.2 BETA TEST — v7.41 tested base
+## v1.0.2 BETA TEST — 74.3 tested base
 
 ### Documentation / repository
 
@@ -44,5 +44,5 @@
 - Public-release build for GitHub/Nexus preparation.
 - Neutral media/provider icons.
 - Media Artwork defaults to OFF on clean installs.
-- Added single-player/network-session guard.
+- Added single-player/network guard.
 - Added third-party, privacy/network and publishing documentation.
