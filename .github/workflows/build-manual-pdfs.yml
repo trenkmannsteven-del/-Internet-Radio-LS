@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - repo-cleanup-manuals-v102-work
     paths:
       - 'docs/manuals/source/**'
       - 'docs/manuals/build_manuals.py'
