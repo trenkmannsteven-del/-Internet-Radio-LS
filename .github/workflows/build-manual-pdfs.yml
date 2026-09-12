@@ -1,0 +1,54 @@
+name: Build multilingual PDF manuals
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/manuals/source/**'
+      - 'docs/manuals/build_manuals.py'
+      - '.github/workflows/build-manual-pdfs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-manuals:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install document tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc libreoffice-writer fonts-liberation
+          python -m pip install --disable-pip-version-check python-docx
+
+      - name: Build PDF manuals
+        run: python docs/manuals/build_manuals.py
+
+      - name: Validate generated set
+        run: |
+          test -f docs/manuals/pdf/Internet_Radio_LS_v1.0.2_BETA_Manual_DE.pdf
+          test -f docs/manuals/pdf/Internet_Radio_LS_v1.0.2_BETA_Manual_EN.pdf
+          test -f docs/manuals/pdf/Internet_Radio_LS_v1.0.2_BETA_Manual_ES.pdf
+          test -f docs/manuals/pdf/Internet_Radio_LS_v1.0.2_BETA_Manual_FR.pdf
+          test -f docs/manuals/pdf/Internet_Radio_LS_v1.0.2_BETA_Manual_IT.pdf
+          test -f docs/manuals/pdf/Internet_Radio_LS_v1.0.2_BETA_Manual_PT-BR.pdf
+          test -f docs/manuals/pdf/Internet_Radio_LS_v1.0.2_BETA_Manual_TR.pdf
+
+      - name: Commit generated PDFs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/manuals/pdf
+          if git diff --cached --quiet; then
+            echo "PDF manuals already up to date."
+          else
+            git commit -m "Build multilingual PDF manuals"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
