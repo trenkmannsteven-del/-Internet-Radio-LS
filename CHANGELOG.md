@@ -2,6 +2,12 @@
 
 ## v1.0.2 BETA TEST — v7.41 tested base
 
+### Documentation / repository
+
+- reorganized GitHub documentation into `docs/` by purpose
+- added PDF user manuals for all 7 supported UI languages (DE, EN, ES, FR, IT, PT-BR, TR)
+- kept editable Markdown manual sources next to the PDFs
+
 - Reworked and repositioned the right-side status/information panels for more consistent spacing and readable service status.
 - Cleaned Spotify / YouTube Music status labels and connection/app-volume presentation.
 - Improved persistent user settings for important source, station, skin, playback and vehicle/UI preferences.
