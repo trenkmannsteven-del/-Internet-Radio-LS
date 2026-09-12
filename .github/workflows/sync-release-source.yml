@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   sync-source:
-    if: startsWith(github.event.release.tag_name, 'v1.0.1')
+    if: startsWith(github.event.release.tag_name, 'v1.0.2')
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
@@ -33,14 +33,28 @@ jobs:
           rm -rf /tmp/irls-extracted
           mkdir -p /tmp/irls-extracted
           unzip -q "$ZIP_FILE" -d /tmp/irls-extracted
+          test -d /tmp/irls-extracted/scripts
+          test -f /tmp/irls-extracted/scripts/03_InternetRadioSimple.3.cs
+          test -f /tmp/irls-extracted/README.md
+          test -f /tmp/irls-extracted/CHANGELOG.md
+          test -f /tmp/irls-extracted/BENUTZERHANDBUCH_DE.md
+          test -f /tmp/irls-extracted/USER_MANUAL_EN.md
 
-      - name: Replace legacy source layout
+      - name: Sync v1.0.2 beta source and manuals
         run: |
           rm -rf scripts
-          rm -f 03_InternetRadioSimple.3.cs InternetRadio.ini InternetRadioPlayer.ps1 YouTubeMusicBridge.ps1 YouTubeMusicCoverWorker.ps1 MinecraftGrassBlock.png SakuraZenMotif.png
           cp -a /tmp/irls-extracted/scripts ./scripts
-          for f in DISCLAIMER_AND_LEGAL.txt THIRD_PARTY_NOTICES.txt PRIVACY_AND_NETWORK.txt INSTALLATION.txt UPDATE_AND_UNINSTALL.txt CREDITS_AND_PERMISSIONS.txt RELEASE_NOTES_v1.0.1.txt SHA256_MANIFEST.txt BUILD_PROVENANCE.txt README_DE.txt README_EN.txt LICENSE.txt PUBLISHING_NOTES_NEXUS_GITHUB.txt CHANGELOG.txt; do
-            if [ -f "/tmp/irls-extracted/$f" ]; then cp -f "/tmp/irls-extracted/$f" "./$f"; fi
+
+          for f in \
+            README.md \
+            CHANGELOG.md \
+            BENUTZERHANDBUCH_DE.md \
+            USER_MANUAL_EN.md \
+            RELEASE_NOTES_v1.0.2_BETA_TEST.txt \
+            README_BETA_TEST.txt; do
+            if [ -f "/tmp/irls-extracted/$f" ]; then
+              cp -f "/tmp/irls-extracted/$f" "./$f"
+            fi
           done
 
       - name: Commit synchronized source
