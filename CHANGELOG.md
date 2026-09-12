@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.2 BETA TEST — v7.41 tested base
+## v1.0.2 BETA TEST — v74.3 tested base
 
 - Reworked and repositioned the right-side status/information panels for more consistent spacing and readable service status.
 - Cleaned Spotify / YouTube Music status labels and connection/app-volume presentation.
