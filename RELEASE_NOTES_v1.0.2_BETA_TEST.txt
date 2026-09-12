@@ -1,0 +1,27 @@
+LOS SANTOS INTERNET RADIO LS v1.0.2 - BETA TEST
+
+This beta is based on the user-tested v7.41 build.
+
+Main changes since v1.0.1:
+- cleaned and repositioned right-side information/status panels
+- clearer Spotify and YouTube Music connection/app-volume status
+- simplified Turbo Blow-Off to ON/OFF with one stronger SPORT-style BOV event
+- anti-spam turbo logic and improved factory-turbo recognition
+- improved speedometer and vehicle-HUD behavior
+- persistent source/station/media-state and skin settings improvements
+- independent manual hazard control and refined automatic indicators
+- plate light support with static-neon/xenon color behavior
+- v7.41 strict plate-light gate: normal daylight OFF, real driver/headlight intent, night low/high-beam follow and flicker debounce
+- German and English quick user manuals added
+
+Beta focus:
+- right-side UI positioning
+- plate light during day/night and changing light conditions
+- Turbo Blow-Off
+- UserSettings persistence
+- Spotify / YouTube Music connection status
+
+Reference SHVDN setup used for testing:
+ScriptHookV .NET Enhanced 3.9.0.6 (1.1.0.6), API 3.9.0
+
+Singleplayer only.

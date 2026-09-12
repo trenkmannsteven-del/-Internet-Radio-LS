@@ -1,74 +1,109 @@
 # Internet Radio LS / Los Santos Multimedia
 
-**Public Beta v1.0.1 — based on the tested TEST74.2 hotfix**
+**v1.0.2 BETA TEST — based on the user-tested v7.41 build**
 
-Internet Radio LS adds an in-game multimedia/head-unit style interface to **GTA V single-player** with real internet radio, favorites, live metadata where available, YouTube Music and Spotify media-session integration, multiple themes, a visualizer, audio ducking and optional audio-reactive vehicle lighting.
+Internet Radio LS adds an in-game multimedia/head-unit style interface to **GTA V single-player** with real internet radio, GTA Radio integration, favorites, live metadata where available, YouTube Music and Spotify media-session integration, multiple themes, vehicle HUD features, audio ducking and optional vehicle lighting features.
 
-> **Single-player only.** The public build includes a GTA Online/network-session guard that disables the mod when an online/network session is detected.
+> **Single-player only.** The mod disables its functions when an online/network session is detected.
 
-## Download
+## v1.0.2 Beta Test
 
-Use the latest package from the **GitHub Releases** page:
+This beta focuses on stability and vehicle/UI polish. The current tested base includes:
 
-https://github.com/trenkmannsteven-del/-Internet-Radio-LS/releases
+- cleaned and repositioned right-side information/status panels
+- clearer Spotify / YouTube Music connection and app-volume display
+- persistent user settings for important UI/audio/source/vehicle preferences
+- refined vehicle speedometer/HUD behavior
+- independent manual hazards and refined automatic indicators
+- Turbo Blow-Off reduced to a simple ON/OFF switch with one stronger SPORT-style BOV event and anti-spam logic
+- factory-turbo recognition plus optional add-on factory-turbo model names
+- plate-light support with static-neon/xenon color behavior
+- **v7.41 strict plate-light logic:** normal daylight OFF, explicit driver/headlight intent, night low/high-beam follow and flicker debounce
+- German and English quick user manuals
 
-The v1.0.1 public-beta package is built from the tested TEST74.2 code path.
+### Beta download / installation
 
-## Highlights
+For the beta-test source, use the current `main` branch and copy its `scripts` folder into your GTA V main directory.
 
-- 61 internet radio stations in 10 categories
-- 13 visual themes
-- 7 UI languages: English, German, Spanish, French, Italian, Portuguese (Brazil), Turkish
-- up to 6 favorite stations
-- live station metadata where supported
+The packaged beta uses this layout:
+
+- `scripts/03_InternetRadioSimple.3.cs`
+- `scripts/InternetRadio/...`
+
+Before updating, optionally back up `scripts/InternetRadio/UserSettings.ini`.
+
+## User manuals
+
+- `BENUTZERHANDBUCH_DE.md` — German quick handbook with table of contents
+- `USER_MANUAL_EN.md` — English quick handbook with table of contents
+- `RELEASE_NOTES_v1.0.2_BETA_TEST.txt` — beta changes and test focus
+
+## Reference setup
+
+The developer/test reference currently used for this beta is:
+
+- **ScriptHookV .NET Enhanced 3.9.0.6 (1.1.0.6)**
+- **API 3.9.0**
+- GTA V Enhanced / Singleplayer
+
+Other compatible SHVDN builds may work. If a `.3.cs` compile error occurs, verify that `ScriptHookVDotNet.asi`, `ScriptHookVDotNet2.dll` and `ScriptHookVDotNet3.dll` all come from the same SHVDN release package.
+
+## Core features
+
+- internet radio stations grouped by categories
+- favorites and live metadata where supported
+- GTA Radio integration
 - YouTube Music integration
 - Spotify integration
-- separate service volume handling
-- compact driving HUD and volume HUD
+- separate media-service volume handling
+- 7 UI languages: English, German, Spanish, French, Italian, Portuguese (Brazil), Turkish
+- multiple visual themes
+- compact driving HUD / speedometer
+- manufacturer-logo display with fallback
 - dialogue / phone / menu / Los Santos Customs ducking
-- live audio visualizer
-- optional bass-reactive vehicle neon and cabin light
-- safe low-frequency analyzer fallback
-- automatic user settings
+- optional Beat Neon and cabin lighting
+- plate light linked to real vehicle-light intent
+- automatic user-settings persistence
 - runtime log-size protection
+
+## Basic controls
+
+| Key | Action |
+|---|---|
+| `NUM0` | Open / close multimedia menu |
+| `NUM8 / NUM2` | Navigate; previous/next track in media tabs |
+| `NUM4 / NUM6` | Change menu tab; previous/next outside menu |
+| `NUM5` | Select / apply / activate source |
+| `NUM1` | Active source on/off or play/pause |
+| `NUM3` | Stop / pause |
+| `NUM- / NUM+` | Volume down / up |
+| `NUM7` | Hazard lights |
+| `NUM9` | Manual high beams |
+| `SPACE` | Add / remove station favorite |
+| `DELETE` | Remove selected favorite |
+| `F8` | Reload configuration |
 
 ## Requirements
 
 - GTA V for Windows
 - ScriptHookV
-- ScriptHookVDotNet
+- ScriptHookVDotNet / ScriptHookV .NET Enhanced compatible with the game build
 - Windows PowerShell
-- Internet connection for radio streams and optional online media integrations
+- Internet connection for radio streams and optional media integrations
 
 LemonUI is **not required**.
 
-## Installation
+## Personal settings
 
-1. Download the latest ZIP from GitHub Releases.
-2. Extract it into the GTA V installation directory.
-3. Keep the included `scripts/InternetRadio/` folder structure intact.
-4. Make sure `GTA V/scripts/InternetRadio/` is writable by your Windows user account.
-5. Start GTA V in single-player, enter a supported vehicle and press `NUM0`.
+Personal settings are stored in `scripts/InternetRadio/UserSettings.ini`. The main station/technical configuration remains in `scripts/InternetRadio/InternetRadio.ini`.
 
-## Controls
+The Windows user running GTA V needs read/write/modify permission for `scripts/InternetRadio/` so user settings, caches and helper status files can be created safely.
 
-| Key | Action |
-|---|---|
-| `NUM0` | Open / close multimedia menu |
-| `NUM8 / NUM2` | Navigate up/down; app selection on HOME |
-| `NUM4 / NUM6` | Change tab / previous-next where supported |
-| `NUM5` | Select / open app / activate service |
-| `NUM1` | Radio power or play/pause depending on page |
-| `NUM3` | Stop radio / pause media service depending on page |
-| `NUM- / NUM+` | Volume down / up |
-| `SPACE` | Add / remove favorite on Stations page |
-| `F8` | Reload configuration |
+## Media artwork & privacy
 
-## Media Artwork & Privacy
+The public build does **not** bundle third-party album/track artwork. Media artwork can be enabled by the user and may use locally available media-session information and temporary cache files.
 
-The public build does **not** bundle third-party album/track artwork. **Media Artwork defaults to OFF** on fresh installations. If the user explicitly enables it, artwork may be read from locally available media-session information and cached temporarily for the in-game interface. Runtime caches are cleaned by the mod and again on the next start where applicable.
-
-The mod does not include developer telemetry or analytics. Internet access is used for the radio streams and optional media-service integration required by the feature set.
+The mod does not include developer telemetry or analytics. Internet access is used for radio streams and optional media-service integration.
 
 See:
 
@@ -76,31 +111,15 @@ See:
 - `THIRD_PARTY_NOTICES.txt`
 - `PRIVACY_AND_NETWORK.txt`
 
-## Public-release branding
-
-The public build uses neutral/mod-created media icons. No Spotify or YouTube logo files and no third-party album artwork are bundled in the package.
-
-## Source layout
-
-After a v1.0.1 release is published, the release-sync workflow updates the repository source tree from the tested release ZIP:
-
-- `scripts/03_InternetRadioSimple.3.cs` — GTA/ScriptHookVDotNet controller and UI
-- `scripts/InternetRadio/*.ps1` — radio/media/analyzer helper processes
-- `scripts/InternetRadio/InternetRadio.ini` — station and default configuration
-- `scripts/InternetRadio/*.png` — original/mod-created UI assets used by the public build
-
 ## Known limitations
 
 - Third-party radio streams can go offline, change URL, or be geo-blocked.
 - YouTube Music / Spotify media-session behavior depends on Windows, the browser/app and the third-party service.
-- A hard process crash can leave temporary runtime files behind; the mod performs startup cleanup where applicable.
+- Vehicle-specific GTA behavior can differ between stock and add-on models; beta feedback should include the vehicle/model name.
+- v1.0.2 is a **beta test**, so reproducible logs/screenshots are useful.
 
 ## License & legal
 
 Project code and original/mod-created assets are currently published under an **All Rights Reserved** project notice. Publishing the source on GitHub does not grant a general open-source license.
 
 This is an unofficial independent fan-made modification. It is not affiliated with, endorsed by, sponsored by, or officially connected with Rockstar Games, Take-Two Interactive, Spotify, Google, YouTube, or any radio/stream provider.
-
-Third-party names and service references are used for identification of supported integrations only. All third-party rights remain with their respective owners.
-
-See `LICENSE`, `DISCLAIMER_AND_LEGAL.txt` and `THIRD_PARTY_NOTICES.txt` for details.
