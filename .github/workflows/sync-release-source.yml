@@ -3,16 +3,21 @@ name: Sync public release source
 on:
   release:
     types: [published]
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-release-source.yml'
 
 permissions:
   contents: write
 
 jobs:
   sync-source:
-    if: startsWith(github.event.release.tag_name, 'v1.0.2')
+    if: github.event_name == 'push' || (github.event_name == 'release' && startsWith(github.event.release.tag_name, 'v1.0.2'))
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || 'v1.0.2-beta-test' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,7 +28,7 @@ jobs:
       - name: Download release ZIP
         run: |
           mkdir -p /tmp/irls-release
-          gh release download "${{ github.event.release.tag_name }}" --pattern "*.zip" --dir /tmp/irls-release
+          gh release download "$RELEASE_TAG" --pattern "*.zip" --dir /tmp/irls-release
           ZIP_FILE="$(find /tmp/irls-release -maxdepth 1 -type f -name '*.zip' | head -n 1)"
           test -n "$ZIP_FILE"
           echo "ZIP_FILE=$ZIP_FILE" >> "$GITHUB_ENV"
@@ -65,6 +70,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "Source already synchronized."
           else
-            git commit -m "Sync source from ${{ github.event.release.tag_name }} release package"
+            git commit -m "Sync source from $RELEASE_TAG release package"
             git push origin HEAD:main
           fi
