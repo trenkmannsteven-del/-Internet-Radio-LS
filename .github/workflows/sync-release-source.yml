@@ -3,21 +3,17 @@ name: Sync public release source
 on:
   release:
     types: [published]
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/sync-release-source.yml'
 
 permissions:
   contents: write
 
 jobs:
   sync-source:
-    if: github.event_name == 'push' || (github.event_name == 'release' && startsWith(github.event.release.tag_name, 'v1.0.2'))
+    if: startsWith(github.event.release.tag_name, 'v1.0.2')
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
-      RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || 'v1.0.2-beta-test' }}
+      RELEASE_TAG: ${{ github.event.release.tag_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
